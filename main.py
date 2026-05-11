@@ -22,12 +22,36 @@ with sync_playwright() as p:
     page.fill('input[name="password"]', PASSWORD)
     
     page.keyboard.press("Enter")
-    
-    print("Waiting for page to reach network idle after login...")
-    page.wait_for_load_state("domcontentloaded")
-    
-    time.sleep(10)
-    
+
+    print("Waiting for navigation away from login page...")
+    try:
+        # Wait until the URL is no longer the login page (up to 30s)
+        page.wait_for_url(lambda url: "discord.com/login" not in url, timeout=30000)
+        print(f"Login appears successful — current URL: {page.url}")
+    except Exception as e:
+        print(f"Timed out waiting to leave login page: {e}")
+        print(f"Current URL: {page.url}")
+        print(f"Current page title: {page.title()}")
+        print("Still on login page — login likely failed. Dumping page content...")
+        print(page.content())
+        page.screenshot(path="login_failed_screenshot.png")
+        print("Screenshot saved to login_failed_screenshot.png")
+        browser.close()
+        raise SystemExit(1)
+
+    # Confirm we are not still on the login page
+    if "discord.com/login" in page.url:
+        print(f"ERROR: Still on login page after wait. URL: {page.url}")
+        print(f"Page title: {page.title()}")
+        print("Dumping page content for debugging...")
+        print(page.content())
+        page.screenshot(path="login_failed_screenshot.png")
+        print("Screenshot saved to login_failed_screenshot.png")
+        browser.close()
+        raise SystemExit(1)
+
+    print(f"Login confirmed. Page title: {page.title()} | URL: {page.url}")
+
     # open DM
     print(f"Navigating to DM URL: {DM_URL}")
     page.goto(DM_URL)
