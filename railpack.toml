@@ -1,2 +1,3 @@
+# System dependencies required by Playwright to run Chromium headlessly
 [build]
 nixpkgs = ["xorg.libX11", "xorg.libxcb", "gtk3", "cairo", "alsa-lib", "freetype", "fontconfig", "dbus"]
