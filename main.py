@@ -32,19 +32,20 @@ with sync_playwright() as p:
     print(f"Navigating to DM URL: {DM_URL}")
     page.goto(DM_URL)
     
-    time.sleep(10)
+    time.sleep(20)
     
     # send message
-    print("Waiting for textbox to appear...")
-    page.wait_for_selector('div[role="textbox"]', timeout=15000)
-    
-    print("Textbox found, filling message...")
-    textbox = page.locator('div[role="textbox"]')
-    
-    textbox.fill(MESSAGE)
-    
-    page.keyboard.press("Enter")
-    
-    print("Message sent!")
+    print("Attempting to locate message input (textarea)...")
+    try:
+        textbox = page.locator('textarea')
+        textbox.fill(MESSAGE)
+        page.keyboard.press("Enter")
+        print("Message sent!")
+    except Exception as e:
+        print(f"Failed to find or interact with textarea: {e}")
+        print("Dumping page content for debugging...")
+        print(page.content())
+        page.screenshot(path="debug_screenshot.png")
+        print("Screenshot saved to debug_screenshot.png")
     
     browser.close()
