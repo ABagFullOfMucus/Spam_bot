@@ -24,7 +24,7 @@ with sync_playwright() as p:
     page.keyboard.press("Enter")
     
     print("Waiting for page to reach network idle after login...")
-    page.wait_for_load_state("networkidle")
+    page.wait_for_load_state("domcontentloaded")
     
     time.sleep(10)
     
