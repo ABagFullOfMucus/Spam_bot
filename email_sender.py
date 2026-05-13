@@ -1,0 +1,19 @@
+import os
+import smtplib
+from email.message import EmailMessage
+
+def send_email():
+    email = os.getenv("EMAIL")
+    password = os.getenv("EMAIL_PASSWORD")
+    to_email = os.getenv("TO_EMAIL")
+    message = os.getenv("MESSAGE")
+
+    msg = EmailMessage()
+    msg["From"] = email
+    msg["To"] = to_email
+    msg["Subject"] = "Scheduled Email"
+    msg.set_content(message)
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+        smtp.login(email, password)
+        smtp.send_message(msg)
