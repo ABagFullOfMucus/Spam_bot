@@ -14,7 +14,7 @@ def send_email():
     msg = EmailMessage()
     msg["From"] = email
     msg["To"] = to_email
-    msg["Subject"] = "Scheduled Email"
+    msg["Subject"] = "Tama bel fee"
     msg.set_content(message)
 
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
